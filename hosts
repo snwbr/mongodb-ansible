@@ -2,14 +2,14 @@
 
 # the mongo servers need a mongod_port variable set, and they must not conflict.
 [mongo_servers]
-mongo1 mongod_port=2710
-mongo2 mongod_port=2710
-mongo3 mongod_port=2710
-#mongo4 mongod_port=2710
+mongo1 mongod_port=2710 ansible_host=ec2-52-42-130-155.us-west-2.compute.amazonaws.com
+mongo2 mongod_port=2710 ansible_host=ec2-52-40-168-91.us-west-2.compute.amazonaws.com
+mongo3 mongod_port=2710 ansible_host=ec2-34-216-72-109.us-west-2.compute.amazonaws.com
+mongo4 mongod_port=2710 ansible_host=ec2-54-212-1-50.us-west-2.compute.amazonaws.com
 
 #The list of servers where replication should happen, by default include all servers
 [replication_servers]
-#mongo4
+mongo4
 mongo3
 mongo1
 mongo2
@@ -23,7 +23,7 @@ mongo3
 
 #The list of servers where mongos servers would run. 
 [mongos_servers]
-mongo1
-mongo2
+mongos1 ansible_host=ec2-18-237-118-157.us-west-2.compute.amazonaws.com
+mongos2 ansible_host=ec2-54-218-77-164.us-west-2.compute.amazonaws.com
 
 
