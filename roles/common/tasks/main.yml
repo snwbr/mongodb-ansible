@@ -1,0 +1,39 @@
+---
+# This Playbook runs all the common plays in the deployment
+
+- name: Create the hosts file for all machines
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: Create the repository for 10Gen
+  copy: src=mongodb-org-4.0.repo.j2 dest=/etc/yum.repos.d/mongodb-org-4.0.repo
+
+- name: Create the EPEL Repository
+  yum: name={{ item }} state=installed
+  with_items:
+   - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+- name: Enable extra repositories
+  shell: subscription-manager repos --enable "rhel-*-optional-rpms" --enable "rhel-*-extras-rpms"
+
+- name: Create the mongod user
+  user: name=mongod comment="MongoD"
+
+- name: Create the data directory for the namenode metadata
+  file: path={{ mongodb_datadir_prefix }} owner=mongod group=mongod state=directory
+
+- name: Install the mongodb package
+  yum: name={{ item }} state=installed
+  with_items:
+   - libselinux-python
+   - mongodb-org
+   - bc
+   - python-pip
+
+- name: Install the latest pymongo package
+  pip: name=pymongo state=latest use_mirrors=no
+
+- name: Set SELinux rules to allow MongoDB port 2710
+  shell: semanage port -a -t mongod_port_t -p tcp 2710
+
+- name: Set SELinux rules to allow MongoDB port 7777
+  shell: semanage port -a -t mongod_port_t -p tcp 7777
