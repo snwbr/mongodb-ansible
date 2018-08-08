@@ -12,8 +12,8 @@
   with_items:
    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-- name: Enable extra repositories
-  shell: subscription-manager repos --enable "rhel-*-optional-rpms" --enable "rhel-*-extras-rpms"
+#- name: Enable extra repositories
+#  shell: subscription-manager repos --enable "rhel-*-optional-rpms" --enable "rhel-*-extras-rpms"
 
 - name: Create the mongod user
   user: name=mongod comment="MongoD"
