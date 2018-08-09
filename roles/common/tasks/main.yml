@@ -43,11 +43,3 @@
 - name: Set SELinux rules to allow MongoDB port {{ mongoc_port }}
   shell: semanage port -a -t mongod_port_t -p tcp {{ mongoc_port }}
   ignore_errors: yes
-
-- name: Set SELinux rules to allow MongoDB ports {{ mongodb_port_range }}
-  seport:
-    ports: "{{ mongodb_port_range }}"
-    proto: tcp
-    setype: mongod_port_t
-    state: present
-  when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled'
