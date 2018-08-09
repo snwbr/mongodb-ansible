@@ -19,7 +19,7 @@
   user: name=mongod comment="MongoD"
 
 - name: Create the data directory for the namenode metadata
-  file: path={{ mongodb_datadir_prefix }} owner=mongod group=mongod state=directory
+  file: path={{ mongodb_datadir_prefix }} owner=mongod group=mongod state=directory setype=mongod_var_lib_t recurse=true
 
 - name: Install the mongodb package
   yum: name={{ item }} state=installed
@@ -32,8 +32,10 @@
 - name: Install the latest pymongo package
   pip: name=pymongo state=latest use_mirrors=no
 
-- name: Set SELinux rules to allow MongoDB port 2710
-  shell: semanage port -a -t mongod_port_t -p tcp 2710
-
-- name: Set SELinux rules to allow MongoDB port 7777
-  shell: semanage port -a -t mongod_port_t -p tcp 7777
+- name: Set SELinux rules to allow MongoDB ports {{ mongodb_port_range }}
+  seport:
+    ports: "{{ mongodb_port_range }},{{ mongos_port }},{{ mongoc_port }}"
+    proto: tcp
+    setype: mongod_port_t
+    state: present
+  when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled'
