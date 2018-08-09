@@ -12,11 +12,6 @@
 - name: create run directory for mongodb
   file: path=/var/run/mongodb state=directory owner=mongod group=mongod
 
-- name: Create the mongodb startup file
-  template: src=mongod.j2 dest=/etc/init.d/mongod-{{ inventory_hostname }} mode=0655
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
-
 - name: Create the mongodb.service file
   template: src=mongod.service.j2 dest=/usr/lib/systemd/system/mongod-{{ inventory_hostname }}.service mode=0644
   delegate_to: '{{ item }}'
@@ -33,18 +28,10 @@
   with_items: "{{ groups.replication_servers }}"
   
 - name: Copy the keyfile for authentication
-  copy: src=secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400
+  copy: src=secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400 setype=mongod_var_lib_t
 
-- name: Set permissions for the keyfile
-  shell: chcon system_u:object_r:mongod_var_lib_t:s0 {{ mongodb_datadir_prefix }}/secret
-
-- name: Enable MongoDB service for automatic start
-  shell: systemctl enable mongod-{{ inventory_hostname }}
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
-  
 - name: Start the mongodb service
-  command: creates=/var/lock/subsys/mongod-{{ inventory_hostname }} /etc/init.d/mongod-{{ inventory_hostname }} start
+  systemd: name=mongod-{{ inventory_hostname }} state=started daemon_reload=yes enabled=yes
   delegate_to: '{{ item }}'
   with_items: "{{ groups.replication_servers }}"
 
