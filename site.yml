@@ -4,12 +4,13 @@
 - hosts: all
   remote_user: snwbr
   become: yes
-  become_method: su
-
+  gather_facts: yes
+  
   roles:
   - role: common
 
 - hosts: mongo_servers
+  become: yes
   roles:
   - role: mongod
 

@@ -26,4 +26,7 @@ mongo3
 mongos1 ansible_host=ec2-18-237-118-157.us-west-2.compute.amazonaws.com
 mongos2 ansible_host=ec2-54-218-77-164.us-west-2.compute.amazonaws.com
 
-
+[all:vars]
+ansible_connection=ssh
+ansible_ssh_user=snwbr
+ansible_ssh_pass={{ ssh_user_pass  }}
