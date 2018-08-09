@@ -10,10 +10,15 @@
   file: path=/var/log/mongo state=directory owner=mongod group=mongod
 
 - name: create run directory for mongodb
-  file: path=/var/run/mongo state=directory owner=mongod group=mongod
+  file: path=/var/run/mongodb state=directory owner=mongod group=mongod
 
 - name: Create the mongodb startup file
   template: src=mongod.j2 dest=/etc/init.d/mongod-{{ inventory_hostname }} mode=0655
+  delegate_to: '{{ item }}'
+  with_items: "{{ groups.replication_servers }}"
+
+- name: Create the mongodb.service file
+  template: src=mongod.service.j2 dest=/usr/lib/systemd/system/mongod-{{ inventory_hostname }}.service mode=0644
   delegate_to: '{{ item }}'
   with_items: "{{ groups.replication_servers }}"
 
