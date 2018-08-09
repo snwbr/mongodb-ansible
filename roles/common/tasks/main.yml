@@ -46,7 +46,7 @@
 
 - name: Set SELinux rules to allow MongoDB ports {{ mongodb_port_range }}
   seport:
-    ports: {{ mongodb_port_range }}
+    ports: "{{ mongodb_port_range }}"
     proto: tcp
     setype: mongod_port_t
     state: present
