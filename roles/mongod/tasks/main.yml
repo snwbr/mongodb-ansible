@@ -2,9 +2,7 @@
 # This role deploys the mongod processes and sets up the replication set.
 
 - name: create data directory for mongodb
-  file: path={{ mongodb_datadir_prefix }}/mongo-{{ inventory_hostname }} state=directory owner=mongod group=mongod
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
+  file: path={{ mongodb_datadir_prefix }}/mongo state=directory owner=mongod group=mongod
 
 - name: create log directory for mongodb
   file: path=/var/log/mongo state=directory owner=mongod group=mongod setype=mongod_log_t recurse=true
@@ -12,28 +10,17 @@
 - name: create run directory for mongodb
   file: path=/var/run/mongodb state=directory owner=mongod group=mongod setype=mongod_var_run_t seuser=system_u recurse=true
 
-- name: Create the mongodb.service file
-  template: src=mongod.service.j2 dest=/usr/lib/systemd/system/mongod-{{ inventory_hostname }}.service mode=0644
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
-
 - name: Make sure config directory exists
   file: path={{ mongodb_config_prefix }} state=directory owner=mongod group=mongod
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
 
 - name: Create the mongodb configuration file
-  template: src=mongod.conf.j2 dest={{ mongodb_config_prefix }}/mongod-{{ inventory_hostname }}.conf
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
+  template: src=mongod.conf.j2 dest={{ mongodb_config_prefix }}/mongod.conf
   
 - name: Copy the keyfile for authentication
   copy: src=secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400 setype=mongod_var_lib_t
 
 - name: Start the mongodb service
-  systemd: name=mongod-{{ inventory_hostname }} state=started daemon_reload=yes enabled=yes
-  delegate_to: '{{ item }}'
-  with_items: "{{ groups.replication_servers }}"
+  systemd: name=mongod state=started daemon_reload=yes enabled=yes
 
 - name: Create the file to initialize the mongod replica set
   template: src=repset_init.j2 dest=/tmp/repset_init.js

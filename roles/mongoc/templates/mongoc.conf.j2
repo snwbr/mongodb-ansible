@@ -1,17 +1,24 @@
+systemLog:
+  destination: file
+  path: "/var/log/mongo/mongod-config.log"
+  logAppend: true
 
-#where to log
-logpath=/var/log/mongo/mongod-config.log
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongoc.pid
 
-logappend=true
+net:
+  port: {{ mongoc_port }}
+  bindIpAll: true
 
-# fork and run in background
-fork = true
+storage:
+  dbpath: {{ mongodb_datadir_prefix }}configdb
 
-port = {{ mongoc_port }}
+security:
+  keyFile: {{ mongodb_datadir_prefix }}secret
 
-dbpath={{ mongodb_datadir_prefix }}configdb
-keyFile={{ mongodb_datadir_prefix }}secret
-# location of pidfile
-pidfilepath = /var/run/mongo/mongoc.pid
+sharding:
+  clusterRole: configsv
 
-configsvr=true
+replication:
+  replSetName: "replconfig01"

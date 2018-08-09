@@ -4,19 +4,17 @@
 - name: Create data directory for mongoc configuration server
   file: path={{ mongodb_datadir_prefix }}/configdb state=directory owner=mongod group=mongod
 
-- name: Create the mongo configuration server startup file
-  template: src=mongoc.j2 dest=/etc/init.d/mongoc mode=0655
-
+- name: Create the mongodb startup file
+  template: src=mongoc.service.j2 dest=/etc/systemd/system/mongoc.service mode=0644 seuser=system_u
 
 - name: Create the mongo configuration server file
-  template: src=mongoc.conf.j2 dest=/etc/mongoc.conf
-
+  template: src=mongoc.conf.j2 dest={{ mongodb_config_prefix }}/mongoc.conf
 
 - name: Copy the keyfile for authentication
-  copy: src=roles/mongod/files/secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400
+  copy: src=roles/mongod/files/secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400 setype=mongod_var_lib_t
 
-- name: Start the mongo configuration server service
-  command: creates=/var/lock/subsys/mongoc /etc/init.d/mongoc start
+- name: Start the mongodb service
+  systemd: name=mongoc state=started daemon_reload=yes enabled=yes
 
 - name: pause
   pause: seconds=20
