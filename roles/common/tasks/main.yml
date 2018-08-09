@@ -31,10 +31,22 @@
 
 - name: Install the latest pymongo package
   pip: name=pymongo state=latest use_mirrors=no
+  
+- name: Set SELinux rules to allow MongoDB ports {{ mongodb_port_range }}
+  shell: semanage port -a -t mongod_port_t -p tcp {{ mongodb_port_range }}
+  ignore_errors: yes
+
+- name: Set SELinux rules to allow MongoDB port {{ mongos_port }}
+  shell: semanage port -a -t mongod_port_t -p tcp {{ mongos_port }}
+  ignore_errors: yes
+
+- name: Set SELinux rules to allow MongoDB port {{ mongoc_port }}
+  shell: semanage port -a -t mongod_port_t -p tcp {{ mongoc_port }}
+  ignore_errors: yes
 
 - name: Set SELinux rules to allow MongoDB ports {{ mongodb_port_range }}
   seport:
-    ports: "{{ mongodb_port_range }},{{ mongos_port }},{{ mongoc_port }}"
+    ports: {{ mongodb_port_range }}
     proto: tcp
     setype: mongod_port_t
     state: present
