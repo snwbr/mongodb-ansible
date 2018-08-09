@@ -4,7 +4,7 @@
 - name: Create the hosts file for all machines
   template: src=hosts.j2 dest=/etc/hosts
 
-- name: Create the repository for 10Gen
+- name: Create the repository for MongoDB
   copy: src=mongodb-org-4.0.repo.j2 dest=/etc/yum.repos.d/mongodb-org-4.0.repo
 
 - name: Create the EPEL Repository
