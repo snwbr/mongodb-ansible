@@ -1,25 +1,27 @@
 # mongo.conf
 smallfiles=true
 
-#where to log
-logpath=/var/log/mongo/mongod-{{ inventory_hostname }}.log
+systemLog:
+  destination: file
+  path: "/var/log/mongo/mongod-{{ inventory_hostname }}.log"
+  logAppend: true
 
-logappend=true
+storage:
+  dbPath: {{ mongodb_datadir_prefix }}mongo-{{ inventory_hostname }}
 
-# fork and run in background
-fork = true
-
-port = {{ mongod_port }}
-
-dbpath={{ mongodb_datadir_prefix }}mongo-{{ inventory_hostname }}
-keyFile={{ mongodb_datadir_prefix }}/secret
-
-# location of pidfile
-pidfilepath = /var/run/mongodb/mongod-{{ inventory_hostname }}.pid
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod-{{ inventory_hostname }}.pid
 
 
-# Ping interval for Mongo monitoring server.
-#mms-interval = <seconds>
+security:
+  keyFile: {{ mongodb_datadir_prefix }}secret
 
-# Replication Options
-replSet={{ inventory_hostname }}
+net:
+  port: {{ mongod_port }}
+
+replication:
+  replSetName: {{ inventory_hostname }}
+
+sharding:
+  clusterRole: shardsvr
