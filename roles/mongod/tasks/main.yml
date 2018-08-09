@@ -42,4 +42,4 @@
   pause: seconds=20
 
 - name: Initialize the replication set
-  shell: /usr/bin/mongo --port "{{ mongod_port }}" /tmp/repset_init.js
+  shell: /usr/bin/mongo --port "localhost:{{ mongod_port }}/admin" /tmp/repset_init.js
