@@ -7,10 +7,10 @@
   with_items: "{{ groups.replication_servers }}"
 
 - name: create log directory for mongodb
-  file: path=/var/log/mongo state=directory owner=mongod group=mongod
+  file: path=/var/log/mongo state=directory owner=mongod group=mongod setype=mongod_log_t recurse=true
 
 - name: create run directory for mongodb
-  file: path=/var/run/mongodb state=directory owner=mongod group=mongod
+  file: path=/var/run/mongodb state=directory owner=mongod group=mongod setype=mongod_var_run_t seuser=system_u recurse=true
 
 - name: Create the mongodb.service file
   template: src=mongod.service.j2 dest=/usr/lib/systemd/system/mongod-{{ inventory_hostname }}.service mode=0644
