@@ -1,5 +1,4 @@
 # mongo.conf
-smallfiles=true
 
 systemLog:
   destination: file
@@ -12,7 +11,6 @@ storage:
 processManagement:
   fork: true
   pidFilePath: /var/run/mongodb/mongod-{{ inventory_hostname }}.pid
-
 
 security:
   keyFile: {{ mongodb_datadir_prefix }}secret
