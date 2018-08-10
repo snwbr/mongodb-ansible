@@ -1,11 +1,15 @@
 #The site wide list of mongodb servers
 
-# the mongo servers need a mongod_port variable set, and they must not conflict.
+# the mongo servers need a mongod_port variable set. It also contains the shards replica set names to create
 [mongo_servers]
-mongo1 mongod_port=2710 ansible_host=ec2-52-42-130-155.us-west-2.compute.amazonaws.com
-mongo2 mongod_port=2711 ansible_host=ec2-52-40-168-91.us-west-2.compute.amazonaws.com
-mongo3 mongod_port=2712 ansible_host=ec2-34-216-72-109.us-west-2.compute.amazonaws.com
-mongo4 mongod_port=2713 ansible_host=ec2-54-212-1-50.us-west-2.compute.amazonaws.com
+mongo1 shardReplica=shard1 mongod_port=2710 ansible_host=ec2-52-42-130-155.us-west-2.compute.amazonaws.com
+mongo2 shardReplica=shard1 mongod_port=2710 ansible_host=ec2-52-40-168-91.us-west-2.compute.amazonaws.com
+mongo3 shardReplica=shard2 mongod_port=2710 ansible_host=ec2-34-216-72-109.us-west-2.compute.amazonaws.com
+mongo4 shardReplica=shard2 mongod_port=2710 ansible_host=ec2-54-212-1-50.us-west-2.compute.amazonaws.com
+
+[shardInit]
+mongo1
+mongo3
 
 #The list of servers where replication should happen, by default include all servers
 [replication_servers]

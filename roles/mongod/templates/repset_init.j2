@@ -1,7 +1,19 @@
-rs.initiate()
-sleep(13000)
-{% for host in groups['replication_servers'] %}
-rs.add("{{ host }}:{{ mongod_port }}")
-sleep(8000)
-{% endfor %}
+rs.initiate( {
+   _id : "{{ shardReplica }}",
+   members: [
+{% set hosts = '' %}
+{% set cont = 0 %}
+ {% for host in groups['mongo_servers'] %}
+   {% if host.shardReplica == shardReplica %}
+     {% if loop.last %}
+       { _id: {{ cont }}, host: "{{ host }}:{{ mongod_port }}" }
+     {% else %}
+       { _id: {{ cont }}, host: "{{ host }}:{{ mongod_port }}" },
+     {% endif %}
+     {% set cont = cont + 1 %}
+   {% endif %}
+ {% endfor %}
+   ]
+})
+sleep(20000)
 printjson(rs.status())

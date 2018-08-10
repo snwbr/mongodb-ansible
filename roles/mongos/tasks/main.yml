@@ -1,18 +1,19 @@
 ---
 #This Playbook configures the mongos service of mongodb
 
-- name: Create the mongos startup file
-  template: src=mongos.j2 dest=/etc/init.d/mongos mode=0655
-
-
 - name: Create the mongos configuration file
-  template: src=mongos.conf.j2 dest=/etc/mongos.conf
-
-- name: Copy the keyfile for authentication
-  copy: src=roles/mongod/files/secret dest={{ mongodb_datadir_prefix }}/secret owner=mongod group=mongod mode=0400
+  template: src=mongos.conf.j2 dest={{ mongodb_config_prefix }}/mongos.conf
 
 - name: Start the mongos service
-  command: creates=/var/lock/subsys/mongos /etc/init.d/mongos start
+  shell: mongos --config {{ mongodb_config_prefix }}/mongos.conf
+
+- name: Create the file to initialize the mongod Shard
+  template: src=shard_init.j2 dest=/tmp/shard_init_{{ inventory_hostname }}.js
+
+- name: Add the shard to the mongos
+  shell: /usr/bin/mongo localhost:{{ mongos_port }}/admin -u {{ mongo_admin_user }} -p {{ mongo_admin_pass }} /tmp/shard_init_{{ inventory_hostname }}.js
+  when: inventory_hostname in groups.mongos_servers[0]
+
 - name: pause
   pause: seconds=20
 
@@ -21,3 +22,11 @@
 
 - name: copy the file enable  sharding
   template: src=enablesharding.j2 dest=/tmp/enablesharding.js
+
+- name: Enabling sharding
+  shell: /usr/bin/mongo --port "localhost:{{ mongos_port }}/admin" /tmp/enablesharding.js
+  when: inventory_hostname in groups.mongos_servers[0]
+
+- name: Testing sharding 
+  shell: /usr/bin/mongo --port "localhost:{{ mongos_port }}/admin" /tmp/testsharding.js
+  when: inventory_hostname in groups.mongos_servers[0]
