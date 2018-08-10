@@ -23,7 +23,7 @@
   template: src=repset_init.j2 dest=/tmp/repset_init.js
 
 - name: Initialize the replication set
-  shell: /usr/bin/mongo --port "localhost:{{ mongoc_port }}/admin" /tmp/repset_init.js
+  shell: mongo localhost:{{ mongoc_port }}/admin /tmp/repset_init.js
   when: inventory_hostname in groups.mongoc_servers[0]
 
 - name: add the admin user

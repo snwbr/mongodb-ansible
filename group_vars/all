@@ -3,6 +3,9 @@
 # The chunksize for shards in MB
 mongos_chunk_size: 1
 
+# The port in which the mongo shards will listen. It can also be a range in the format XXXX-YYYY
+mongodb_port_range: 2710
+
 # The port in which mongos server should listen on 
 mongos_port: 2710
 
@@ -13,7 +16,7 @@ mongoc_port: 7777
 mongodb_datadir_prefix: /data/
 
 # The directory to store mongo config
-mongodb_config_prefix: /etc/mongo/
+mongodb_config_prefix: /etc/
 
 # The interface where the mongodb process should listen on.
 # Defaults to the first interface. Change this to:

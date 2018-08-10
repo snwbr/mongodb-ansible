@@ -1,6 +1,6 @@
 systemLog:
   destination: file
-  path: "/var/log/mongo/mongod-config.log"
+  path: /var/log/mongodb/mongod-config.log
   logAppend: true
 
 processManagement:
@@ -12,13 +12,13 @@ net:
   bindIpAll: true
 
 storage:
-  dbpath: {{ mongodb_datadir_prefix }}configdb
+  dbPath: {{ mongodb_datadir_prefix }}configdb
 
 security:
   keyFile: {{ mongodb_datadir_prefix }}secret
 
 sharding:
-  clusterRole: configsv
+  clusterRole: configsvr
 
 replication:
   replSetName: "replconfig01"
