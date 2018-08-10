@@ -34,4 +34,3 @@ mongos2 ansible_host=ec2-54-218-77-164.us-west-2.compute.amazonaws.com
 ansible_connection=ssh
 ansible_ssh_user=snwbr
 ansible_ssh_pass={{ ssh_user_pass  }}
-mongodb_port_range=2710-2713

@@ -15,13 +15,11 @@
   - role: mongod
 
 - hosts: mongoc_servers
+  become: yes
   roles:
   - role: mongoc
 
 - hosts: mongos_servers
+  become: yes
   roles:
   - role: mongos
-
-- hosts: mongo_servers
-  tasks:
-  - include: roles/mongod/tasks/shards.yml

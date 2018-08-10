@@ -2,17 +2,19 @@ rs.initiate( {
    _id : "{{ shardReplica }}",
    members: [
 {% set hosts = '' %}
-{% set cont = 0 %}
- {% for host in groups['mongo_servers'] %}
-   {% if host.shardReplica == shardReplica %}
-     {% if loop.last %}
-       { _id: {{ cont }}, host: "{{ host }}:{{ mongod_port }}" }
-     {% else %}
-       { _id: {{ cont }}, host: "{{ host }}:{{ mongod_port }}" },
-     {% endif %}
-     {% set cont = cont + 1 %}
-   {% endif %}
- {% endfor %}
+{% set shards = [] %}
+{% for host in groups['mongo_servers'] %}
+{% if hostvars[host].shardReplica == shardReplica %}
+{{ shards.append(host) }}
+{% endif %}
+{% endfor %}
+{% for host in shards %}
+{% if loop.last %}
+     { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongod_port }}" }
+{% else %}
+     { _id: {{ loop.index0 }}, host: "{{ host }}:{{ mongod_port }}" },
+{% endif %}
+{% endfor %}
    ]
 })
 sleep(20000)
