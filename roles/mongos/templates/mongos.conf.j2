@@ -1,6 +1,6 @@
 systemLog:
   destination: file
-  path: "/var/log/mongo/mongos.log"
+  path: "/var/log/mongodb/mongos.log"
   logAppend: true
 
 processManagement:
@@ -23,4 +23,4 @@ sharding:
 
 # location of pidfile
 security:
-  keyFile={{ mongodb_datadir_prefix }}/secret
+  keyFile={{ mongodb_datadir_prefix }}secret

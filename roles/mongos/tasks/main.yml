@@ -7,6 +7,13 @@
 - name: Start the mongos service
   shell: mongos --config {{ mongodb_config_prefix }}/mongos.conf
 
+- name: Create the file to initialize the mongod Shard
+  template: src=shard_init.j2 dest=/tmp/shard_init_{{ inventory_hostname }}.js
+
+- name: Add the shard to the mongos
+  shell: /usr/bin/mongo localhost:{{ mongos_port }}/admin -u {{ mongo_admin_user }} -p {{ mongo_admin_pass }} /tmp/shard_init_{{ inventory_hostname }}.js
+  when: inventory_hostname in groups.mongos_servers[0]
+
 - name: pause
   pause: seconds=20
 
@@ -15,3 +22,11 @@
 
 - name: copy the file enable  sharding
   template: src=enablesharding.j2 dest=/tmp/enablesharding.js
+
+- name: Enabling sharding
+  shell: /usr/bin/mongo --port "localhost:{{ mongos_port }}/admin" /tmp/enablesharding.js
+  when: inventory_hostname in groups.mongos_servers[0]
+
+- name: Testing sharding 
+  shell: /usr/bin/mongo --port "localhost:{{ mongos_port }}/admin" /tmp/testsharding.js
+  when: inventory_hostname in groups.mongos_servers[0]

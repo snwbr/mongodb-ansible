@@ -5,7 +5,7 @@
   file: path={{ mongodb_datadir_prefix }}/mongo state=directory owner=mongod group=mongod
 
 - name: create log directory for mongodb
-  file: path=/var/log/mongo state=directory owner=mongod group=mongod setype=mongod_log_t recurse=true
+  file: path=/var/log/mongodb state=directory owner=mongod group=mongod setype=mongod_log_t recurse=true
 
 - name: create run directory for mongodb
   file: path=/var/run/mongodb state=directory owner=mongod group=mongod setype=mongod_var_run_t seuser=system_u recurse=true
@@ -30,3 +30,4 @@
 
 - name: Initialize the replication set
   shell: /usr/bin/mongo --port "localhost:{{ mongod_port }}/admin" /tmp/repset_init.js
+  when: inventory_hostname in groups.shardInit
