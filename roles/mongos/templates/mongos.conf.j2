@@ -1,6 +1,6 @@
 systemLog:
   destination: file
-  path: "/var/log/mongodb/mongos.log"
+  path: /var/log/mongodb/mongos.log
   logAppend: true
 
 processManagement:
@@ -12,15 +12,14 @@ net:
 
 sharding:
 {% set hosts = '' %}
- {% for host in groups['mongoc_servers'] %}
-   {% if loop.last %}
-      {% set hosts = hosts + host + ':' ~ mongoc_port  %}
-       configDB: replconfig01/{{ hosts }}
-      {% else %}
-        {% set hosts = hosts + host + ':' ~ mongoc_port + ','  %}
-   {% endif %}
- {% endfor %}
+{% for host in groups['mongoc_servers'] %}
+{% if loop.last %}
+{% set hosts = hosts + host + ':' ~ mongoc_port  %}
+  configDB: replconfig01/{{ hosts }}
+{% else %}
+{% set hosts = hosts + host + ':' ~ mongoc_port + ','  %}
+{% endif %}
+{% endfor %}
 
-# location of pidfile
 security:
-  keyFile={{ mongodb_datadir_prefix }}secret
+  keyFile: {{ mongodb_datadir_prefix }}secret
