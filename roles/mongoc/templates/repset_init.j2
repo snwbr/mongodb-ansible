@@ -1,5 +1,6 @@
 rs.initiate( {
    _id : "replconfig01",
+   configsvr: true,
    members: [
 {% set hosts = '' %}
  {% for host in groups['mongoc_servers'] %}
@@ -12,4 +13,4 @@ rs.initiate( {
    ]
 })
 sleep(20000)
-printjson(rs.status())
+rs.status()

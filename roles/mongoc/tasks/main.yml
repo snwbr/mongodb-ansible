@@ -27,5 +27,11 @@
   when: inventory_hostname in groups.mongoc_servers[0]
 
 - name: add the admin user
-  mongodb_user: database=admin name={{ mongo_admin_user }} password={{ mongo_admin_pass }} login_port={{ mongoc_port }} state=present
+  mongodb_user: 
+    database: admin
+    name: "{{ mongo_admin_user }}"
+    password: "{{ mongo_admin_pass }}"
+    login_port: "{{ mongoc_port }}"
+    roles: clusterAdmin,dbAdminAnyDatabase,readWriteAnyDatabase
+    state: present
   ignore_errors: yes
