@@ -2,4 +2,4 @@
 {% for host in groups['mongo_servers'] %}
 sh.addShard("{{ hostvars[host].shardReplica }}/{{ host }}:{{ hostvars[host].mongod_port }}") 
 {% endfor %}
-printjson(rs.status())
+rs.status()
